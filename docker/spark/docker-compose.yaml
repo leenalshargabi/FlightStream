@@ -1,0 +1,74 @@
+services:
+  itvdelab:
+    image: itversity/itvdelab
+    container_name: itvdelab
+    hostname: itvdelab
+    ports:
+      - "8888:8888"   # Jupyter
+      - "9879:9870"   # NameNode
+      - "10000:10000" # Hive Server 2
+      - "4040:4040"
+      - "8078:8088"
+      - "18180:18080"
+      - "18181:18081"
+    volumes:
+      - "./itversity-material:/home/itversity/itversity-material"
+      - "./data:/data"
+      - ./hadoop/etc/hadoop/core-site.xml:/configs/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./hadoop/etc/hadoop/hdfs-site.xml:/configs/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./hadoop/etc/hadoop/mapred-site.xml:/configs/opt/hadoop/etc/hadoop/mapred-site.xml:ro
+      - ./hadoop/etc/hadoop/yarn-site.xml:/configs/opt/hadoop/etc/hadoop/yarn-site.xml:ro
+    environment:
+      SHELL: /bin/bash
+    networks:
+      - itvdelabnw
+    depends_on:
+      - "cluster_util_db"
+
+  cluster_util_db:
+    image: postgres:13
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./cluster_util_db_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - itvdelabnw
+    environment:
+      POSTGRES_PASSWORD: itversity
+
+  nifi:
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - "7443:8443" 
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=admin123
+      - NIFI_WEB_PROXY_HOST=localhost:7443  
+      - HADOOP_USER_NAME=itversity
+    networks:
+      - itvdelabnw
+    volumes:
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - nifi_database:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_content:/opt/nifi/nifi-current/content_repository
+      - nifi_provenance:/opt/nifi/nifi-current/provenance_repository
+      - ./drivers:/opt/nifi/nifi-current/drivers
+      - ./lab_data:/lab_data
+      - ./nifi/extensions:/opt/nifi/nifi-current/nar_extensions
+      - ./hadoop/etc/hadoop:/opt/hadoop/etc/hadoop:ro
+      - "./data:/data"
+      - "./lab_data:/data_csv"
+
+networks:
+  itvdelabnw:
+    name: itvdelabnw
+    external: true
+
+volumes:
+  nifi_conf:
+  nifi_database:
+  nifi_flowfile:
+  nifi_content:
+  nifi_provenance:

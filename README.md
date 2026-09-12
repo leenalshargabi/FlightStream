@@ -53,7 +53,7 @@ Power BI dashboard
 - [x] Kafka topic and streaming integration
 - [x] Spark Structured Streaming consumer
 - [x] Spark cleaning and transformations
-- [ ] Spark ML
+- [x] Spark ML
 - [ ] PostgreSQL storage
 - [ ] Power BI dashboard
 

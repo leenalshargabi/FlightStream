@@ -49,10 +49,10 @@ Power BI dashboard
 - [x] OAuth2 authentication test
 - [x] Live aircraft data retrieval test
 - [x] Final OpenSky API client
-- [ ] Kafka producer
-- [ ] Kafka topic and streaming integration
-- [ ] Spark Structured Streaming consumer
-- [ ] Spark cleaning and transformations
+- [x] Kafka producer
+- [x] Kafka topic and streaming integration
+- [x] Spark Structured Streaming consumer
+- [x] Spark cleaning and transformations
 - [ ] Spark ML
 - [ ] PostgreSQL storage
 - [ ] Power BI dashboard

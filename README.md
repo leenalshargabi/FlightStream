@@ -54,7 +54,7 @@ Power BI dashboard
 - [x] Spark Structured Streaming consumer
 - [x] Spark cleaning and transformations
 - [x] Spark ML
-- [ ] PostgreSQL storage
+- [x] PostgreSQL storage
 - [ ] Power BI dashboard
 
 ## Setup

@@ -19,6 +19,11 @@ object FlightStreaming {
 
     spark.sparkContext.setLogLevel("WARN")
 
+    // PostgreSQL connection
+    val jdbcUrl = "jdbc:postgresql://spark-cluster_util_db-1:5432/postgres"
+    val dbUser = "postgres"
+    val dbPassword = sys.env.getOrElse("FLIGHTSTREAM_DB_PASSWORD", "")
+
     // ---------------------------------------------------------
     // 2. DEFINE THE JSON SCHEMA "created flightSchema here"
     // ---------------------------------------------------------
@@ -242,13 +247,44 @@ object FlightStreaming {
     // ---------------------------------------------------------
 
     val query = clusteredFlights.writeStream
-      .format("console")
+      .foreachBatch { (batchDF, batchId) =>
+
+        println(s"Writing batch $batchId to PostgreSQL...")
+
+        batchDF
+          .select(
+            "icao24",
+            "callsign",
+            "origin_country",
+            "latitude",
+            "longitude",
+            "altitude",
+            "velocity",
+            "true_track",
+            "vertical_rate",
+            "on_ground",
+            "snapshot_time",
+            "prediction"
+          )
+          .withColumnRenamed("prediction", "cluster")
+          .withColumn("processed_at", current_timestamp())
+          .write
+          .format("jdbc")
+          .option("url", jdbcUrl)
+          .option("dbtable", "flight_clusters")
+          .option("user", dbUser)
+          .option("password", dbPassword)
+          .option("driver", "org.postgresql.Driver")
+          .mode("append")
+          .save()
+
+        println(s"Batch $batchId written to PostgreSQL.")
+      }
       .outputMode("append")
-      .option("truncate", "false")
-      .option("numRows", "10")
       .option("checkpointLocation", "/tmp/flightstream/checkpoint")
       .start()
 
     query.awaitTermination()
+  
   }
 }

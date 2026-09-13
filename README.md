@@ -55,7 +55,7 @@ Power BI dashboard
 - [x] Spark cleaning and transformations
 - [x] Spark ML
 - [x] PostgreSQL storage
-- [ ] Power BI dashboard
+- [x] Power BI dashboard
 
 ## Setup
 

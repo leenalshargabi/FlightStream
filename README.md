@@ -167,7 +167,9 @@ API credentials, database passwords, tokens, and other secrets must not be commi
 
 ## Documentation
 
-For detailed implementation notes, troubleshooting history, verification steps, and technical explanations, see [`docs/PROJECT_NOTES.md`](docs/PROJECT_NOTES.md).
+- [Project Presentation](docs/presentation/FlightStream_Project_Presentation.pptx)
+- [Detailed Project Notes](docs/PROJECT_NOTES.md)
+- [Project Screenshots](docs/screenshots/)
 
 ## Data Attribution
 
